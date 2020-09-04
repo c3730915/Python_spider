@@ -7,7 +7,7 @@ import bs4      #网页解析，获取数据
 import re       #正则表达式
 import time
 import urllib.request,urllib.error #制定url，获取网页
-# import xlwt
+import xlwt
 # import sqlite3
 findLink = re.compile(r'<a href="(.*?)">') #create re expression, referring a rule
 findImgSrc = re.compile(r'<img.*src="(.*?)"',re.S) # S to ignore line break
@@ -22,58 +22,56 @@ def getData(baseurl):
     for i in range(0,10):
         url = baseurl+str(i*25)
         html = askURL(url)
-        #print("this is",str(i),"th page")
-        # print(html)
-        # f = open(str("douban"+str(i)+"html"),"w")
-        # f.write(str(html))
-        #time.sleep(3)
         soup = bs4.BeautifulSoup(html,"html.parser")
         for item in soup.find_all('div',class_ = "item"):
             # print(item) #test item.
             data = [] #store the whole info of a movie
             item = str(item)
-            # print(item)
-            # f = open("temp.html","w")
-            # f.write(item)
             link = re.findall(findLink,item)[0] #re library used to search by using re expression
             imgSrc = re.findall(findImgSrc,item)[0]
             title = re.findall(findTitle,item) #other languages in tiles
             rating = re.findall(findRating,item)[0]
             judgeNum=re.findall(findJudge,item)[0]
             inq = re.findall(findInq,item) #Introduction of movies
-            # bd = re.findall(findBd,item)[0]
-            #
-            # bd = re.sub('<br(\s+)?/>(\s+)?'," ",bd)
-            # bd = re.sub("/"," ",bd)
-            # data.append(bd.strip()) #remove space
+            bd = re.findall(findBd,item)[0]
 
+            bd = re.sub('<br(\s+)?/>(\s+)?'," ",bd) # \s indicats space
+            bd = re.sub("/"," ",bd)
+            bd = str(bd).replace(" ","")
+            bd = bd.replace('\\n','')
 
+            #First append. Title
             if len(inq) ==0:
                 data.append(" ")
 
             if(len(title) == 2):
                 ctitle = str(title[0]).replace('>',"",1)
-                data.append(ctitle)
-                otitle = title[1].replace("/","") #remove /, add forigen languages
+                data.append(re.sub('\s',' ',ctitle))
+                otitle = title[1].replace('>/','') #remove /, add forigen languages
+                #regx = re.compile("")
+               # otitle2 = re.findall()
+                regx = re.compile("(.*?)/(.*)")
+                otitle2 = re.findall(regx,otitle)
+               # print(otitle2[1])
             else:
                 data.append(title[0])
                 data.append(" ") #empty item for excel
 
             data.append(link)
             data.append(imgSrc)
-            data.append(str(title).replace('>','',1))
+            # data.append(str(title).replace('>','',1))
             data.append(rating)
             data.append(judgeNum)
-            print(data)
+            #print(data)
             datalist.append(data)
-           # print(datalist)
-
-            # print(link)
-
+    print(datalist)
     return datalist
 
 def saveData(savepath=".\\"):
-    print()
+    workbook = xlwt.Workbook(encoding="utf-8")  # Create workbook object
+    worksheet = workbook.add_sheet("douban_TOP250",cell_overwrite_ok=True)  # Create work sheet
+    col =("Title","Link","Image","rating","Rating number")
+    # print()
 
 def getData2(baseurl):
     datalist = []
@@ -124,8 +122,9 @@ def getData2(baseurl):
             data.append(bd.strip())  # 去掉前后的空格
 
             datalist.append(data)  # 把处理好的一部电影信息放入datalist
-            print(data)
+            # print(data)
 
+    print(datalist)
     return datalist
 
 
@@ -153,4 +152,4 @@ def askURL(url):
 baseurl = "https://movie.douban.com/top250?start="
 datalist = getData(baseurl)
 savepath=".\doubanmovie_TOP250.xls"
-# saveData(savepath)
+saveData(savepath)
