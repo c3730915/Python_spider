@@ -52,17 +52,17 @@ def getData(baseurl):
                # otitle2 = re.findall()
                 regx = re.compile("(.*?)/(.*)")
                 otitle2 = re.findall(regx,otitle)
-               # print(otitle2[1])
+            
             else:
                 data.append(title[0])
                 data.append(" ") #empty item for excel
 
             data.append(link)
             data.append(imgSrc)
-            # data.append(str(title).replace('>','',1))
+            
             data.append(rating)
             data.append(judgeNum)
-            #print(data)
+            
             datalist.append(data)
     print(datalist)
     return datalist
@@ -71,7 +71,6 @@ def saveData(savepath=".\\"):
     workbook = xlwt.Workbook(encoding="utf-8")  # Create workbook object
     worksheet = workbook.add_sheet("douban_TOP250",cell_overwrite_ok=True)  # Create work sheet
     col =("Title","Link","Image","rating","Rating number")
-    # print()
 
 def getData2(baseurl):
     datalist = []
