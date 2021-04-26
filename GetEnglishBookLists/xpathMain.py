@@ -2,11 +2,11 @@ from lxml import etree
 # print(html_data)
 import requests
 import codecs
-def saveUrlAsUtf():
+def saveUrlAsUtf(base):
     response = requests.get(
-        'http://cmpbook.com/searchbook.php?pagestart=0&action=search&title=&series=%BE%AD%B5%E4%D4%AD%B0%E6&isbn=&publictime=&storetime=&searchword=&s1=&s2=&Submit=%CB%D1%CB%F7&orderby=publictime')
+        'http://cmpbook.com/searchbook.php?pagestart='+str(base)+'&action=search&title=&series=%BE%AD%B5%E4%D4%AD%B0%E6&isbn=&publictime=&storetime=&searchword=&s1=&s2=&Submit=%CB%D1%CB%F7&orderby=publictime')
     html = str(response.content.decode('gb2312').encode('utf-8'), 'utf-8')
-    file = codecs.open("text.html", "w", "utf-8")
+    file = codecs.open("/SearchResultPages"+base.__str__()+".html", "w", "utf-8")
     file.write(html)
     file.close()
 # saveUrlAsUtf()
@@ -23,8 +23,15 @@ def xpath():
     for d in data_list:
         print(d)
 
+def savePages():
+    for i in range(1, 85):
+        baseUrl = 'http://cmpbook.com/searchbook.php?pagestart=' + i.__str__() + '&action=search&title=&series=%BE%AD%B5%E4%D4%AD%B0%E6&isbn=&publictime=&storetime=&searchword=&s1=&s2=&Submit=%CB%D1%CB%F7&orderby=publictime'
+        saveUrlAsUtf(i)
+        resp = requests.get(baseUrl)
+        html = str(resp.content.decode('gb2312').encode('utf-8'), 'utf-8')
 
-xpath()
+
+savePages()
 # print(html)
 
 # f.write(html)

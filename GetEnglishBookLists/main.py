@@ -28,7 +28,6 @@ def askURL(url):
             print(e.reason)
     return response.content.decode('gb2312').encode('utf-8')
 
-
 def saveFile(html):
     # str =
     open('text.html', 'w').write(html)
