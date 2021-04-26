@@ -14,9 +14,29 @@ def getData():
     # print(html_data)
     hxml = etree.HTML(html_data)
     htree = etree.ElementTree(hxml)
-    data_list = htree.xpath("//a[starts-with(@href, '/stackroom.php?')]/text()")
+    # data_list = htree.xpath("//a[starts-with(@href, '/stackroom.php?')]/text()")
     # data_list = htree.xpath("//span/text()")
-    for d in data_list:
+    # 拿到标题
+    data_title = htree.xpath("//tr/td/table[starts-with(@width,'95%') and @class='table01']//span[@class='font09']/text()")
+
+    # 拿到价格
+    data_price = htree.xpath("//tr/td/table[starts-with(@width,'95%') and @class='table01']//span[@class='font04']/text()")
+
+    # 同时拿到isbn和系列
+    data_isbn_series =  htree.xpath("//tr/td/table[starts-with(@width,'95%') and @class='table01']//td[@width='50%']/span[@class='font01']/text()")
+
+    # 拿到作者以及一大堆信息，六个为一组
+    # 分别为 作者，ISBN 丛书名 日期 版次 价格（null)
+    data_list2 = htree.xpath("//tr/td/table[starts-with(@width,'95%') and @class='table01']//td[@align='left']/span[@class='font01']/text()")
+
+    # 拿到了图片link！
+    data_pics = htree.xpath("//img[@width='76']/@src")
+    # print(data_list2[0],data_list2[6],data_list2[12],data_list2[18],data_list2[24])
+    # exit()
+    for d in data_list2:
+        # print(type(d))
+        # etree.tostring(d)
+
         print(d)
         print("=====================================")
 
