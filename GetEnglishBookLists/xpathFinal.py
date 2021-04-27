@@ -4,7 +4,9 @@ import csv
 from lxml import etree
 import requests
 def readFile(base):
-    file = codecs.open("SearchReslutPages/"+str(base)+".html", "r", "utf-8")
+    # 这个地方可能出错，根据网页编码不同，有 utf-8 和gbk
+    file = codecs.open("SearchReslutPages/"+str(base)+".html", "r", "gbk")
+
     html = file.read()
     return html
 
@@ -53,6 +55,9 @@ def getData(basePage):
         data_date.append(data_list2[i*6+3][3:])
     # 拿到了图片link！
     data_pics_tmp = htree.xpath("//img[@width='76']/@src")
+    data_id= htree.xpath("//tr/td/table[starts-with(@width,'95%') and @class='table01']//td[class='font09']/a")
+    print(data_id)
+    exit()
     data_pics = []
     pic_base_url = "http://cmpbook.com/"
     for item in data_pics_tmp:
@@ -83,8 +88,9 @@ def saveCsv(data):
         write.writerows(data)
 
 
+
 total_result = []
-for i in range(1,85):
+for i in range(1,28):
     data = getData(i)
     for item in data:
         total_result.append(item)
