@@ -1,5 +1,5 @@
 import urllib
-
+from lxml import etree
 import requests
 import re
 
@@ -41,26 +41,30 @@ def getBrief():
   data = file.readlines()
   id_list = []
   for i in data:
-    # payload = 'searchword=' + i.__str__() + '&flag=isbn&searchtype=stackroom&submit.x=32&submit.y=17'
     i = i.replace("\n", "")
-    print(i)
-  url = "http://www.cmpbook.com/stackroom.php?id="+i
+    url = "http://www.cmpbook.com/stackroom.php?id="+i
+    payload = {}
+    headers = {
+                 'Connection': 'keep-alive',
+                 'Cache-Control': 'max-age=0',
+                 'Upgrade-Insecure-Requests': '1',
+                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36',
+                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                 'Accept-Language': 'en,en-US;q=0.9,zh-CN;q=0.8,zh;q=0.7',
+                 'Cookie': 'BOKADOTCNSITEENGINE=EDRCGS; BOKADOTCNSITEENGINE=ywTlTu'
+                    }
+    r = requests.get('http://www.cmpbook.com/stackroom.php?id='+i)
+    r.encoding = 'GBK'
+    html_data = r.text
+    hxml = etree.HTML(html_data)
+    htree = etree.ElementTree(hxml)
+    data_brief = htree.xpath("//div[@id='tag_content1']//span[@class='font02']/text()")
+    # data_brief = data_brief.strip().replace(u'\u3000', u' ').replace(u'\xa0', u' ').replace(" ", "")
+    str_brief = ""
+    for i in data_brief:
+      str_brief +=str(i).strip().replace(u'\u3000', u' ').replace(u'\xa0', u' ').replace(" ", "")
+    print(str_brief)
 
-  payload = {}
-  headers = {
-    'Connection': 'keep-alive',
-    'Cache-Control': 'max-age=0',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'Accept-Language': 'en,en-US;q=0.9,zh-CN;q=0.8,zh;q=0.7',
-    'Cookie': 'BOKADOTCNSITEENGINE=EDRCGS; BOKADOTCNSITEENGINE=ywTlTu'
-  }
-
-  response = requests.request("GET", url, headers=headers, data=payload)
-
-  print(response.text)
-  exit()
 
 def askURL(url):
   head = {
@@ -86,6 +90,6 @@ def askURL(url):
   return response.text
 
 
-html = askURL("http://www.cmpbook.com/stackroom.php?id=23503")
-print(html)
+getBrief()
+
 

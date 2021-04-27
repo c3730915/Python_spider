@@ -17,8 +17,6 @@ def getData(basePage):
     # print(html_data)
     hxml = etree.HTML(html_data)
     htree = etree.ElementTree(hxml)
-    # data_list = htree.xpath("//a[starts-with(@href, '/stackroom.php?')]/text()")
-    # data_list = htree.xpath("//span/text()")
     # 拿到标题
     data_title = htree.xpath("//tr/td/table[starts-with(@width,'95%') and @class='table01']//span[@class='font09']/text()")
 
